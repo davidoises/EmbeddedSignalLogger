@@ -1,7 +1,6 @@
 #include "device.h"
 #include <stddef.h>
 
-#include "../third_party/driverlib/asysctl.h"
 #include "../third_party/driverlib/flash.h"
 #include "../third_party/driverlib/gpio.h"
 
@@ -13,8 +12,6 @@ extern uint16_t RamfuncsRunStart;
 extern uint16_t RamfuncsRunEnd;
 extern uint16_t RamfuncsRunSize;
 #endif
-
-static void Device_enableAllPeripherals(void);
 
 void device_init(void)
 {
@@ -56,37 +53,6 @@ void device_init(void)
     ASSERT(SysCtl_getClock(DEVICE_OSCSRC_FREQ) == DEVICE_SYSCLK_FREQ);
     ASSERT(SysCtl_getLowSpeedClock(DEVICE_OSCSRC_FREQ) == DEVICE_LSPCLK_FREQ);
 
-    Device_enableAllPeripherals();
-
-    //
-    //Disable DC DC in Analog block
-    //
-    ASysCtl_disableDCDC();
-
-    //
-    //Configure GPIO in Push Pull,Output Mode
-    //
-    GPIO_setPadConfig(22U, GPIO_PIN_TYPE_STD);
-    GPIO_setPadConfig(23U, GPIO_PIN_TYPE_STD);
-    GPIO_setDirectionMode(22U, GPIO_DIR_MODE_OUT);
-    GPIO_setDirectionMode(23U, GPIO_DIR_MODE_OUT);
-
-    //
-    // Configure GPIO22 and GPIO23 as digital pins
-    //
-    GPIO_setAnalogMode(22U, GPIO_ANALOG_DISABLED);
-    GPIO_setAnalogMode(23U, GPIO_ANALOG_DISABLED);
-}
-
-static void Device_enableAllPeripherals(void)
-{
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLA1);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DMA);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TIMER0);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TIMER1);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TIMER2);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_HRPWM);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TBCLKSYNC);
 }
 
 //*****************************************************************************
@@ -102,6 +68,17 @@ void device_init_GPIO(void)
     GPIO_unlockPortConfig(GPIO_PORT_A, 0xFFFFFFFF);
     GPIO_unlockPortConfig(GPIO_PORT_B, 0xFFFFFFFF);
     GPIO_unlockPortConfig(GPIO_PORT_H, 0xFFFFFFFF);
+
+    //
+    //Configure GPIO in Push Pull,Output Mode
+    //
+    GPIO_setPadConfig(DEVICE_GPIO_PIN_LED1, GPIO_PIN_TYPE_STD);
+    GPIO_setDirectionMode(DEVICE_GPIO_PIN_LED1, GPIO_DIR_MODE_OUT);
+
+    //
+    // Configure GPIO23 as digital pins
+    //
+    GPIO_setAnalogMode(DEVICE_GPIO_PIN_LED1, GPIO_ANALOG_DISABLED);
 }
 
 //*****************************************************************************
