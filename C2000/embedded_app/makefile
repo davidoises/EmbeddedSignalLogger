@@ -11,15 +11,6 @@ CG_TOOL := $(CG_TOOL_ROOT)/bin/cl2000
 
 LDSCRIPT = ./28004x_generic_flash_lnk.cmd
 
-CMD_SRCS :=
-CMD_SRCS += $(LDSCRIPT)
-
-# C_SRCS :=
-# C_SRCS += ./main.c
-
-# C_SRCS__QUOTED :=
-# C_SRCS__QUOTED += "./main.c"
-
 IN_OBJS :=
 IN_OBJS += ./main.obj
 IN_OBJS += ./drivers/device.obj
@@ -55,7 +46,7 @@ endif
 endif
 
 # All Target
-all: $(IN_OBJS) $(CMD_SRCS)
+all: $(IN_OBJS) $(LDSCRIPT)
 	@$(MAKE) --no-print-directory -Onone $(EXE_OUTPUTS)
 
 %.obj: %.c
@@ -66,7 +57,7 @@ all: $(IN_OBJS) $(CMD_SRCS)
 	@echo ' '
 
 # Tool invocations
-%.out: $(OBJS) $(CMD_SRCS)
+%.out: $(OBJS) $(LDSCRIPT)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
 	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi -z -m$(MAP_OUTPUTS) --stack_size=0x200 --warn_sections -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib" -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --rom_model -o $(EXE_OUTPUTS) $(OBJS) $(LDSCRIPT) $(LDLIBS)
