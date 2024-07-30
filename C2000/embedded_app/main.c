@@ -1,4 +1,4 @@
-#include <stdio.h>
+// #include <stdio.h>
 
 #include "drivers/device.h"
 #include "third_party/driverlib/gpio.h"
@@ -23,7 +23,7 @@ void main(void)
 
     while(1)
     {
-        printf("Hello World simpler %d\n", 10);
+        // printf("Hello World simpler %d\n", 10);
 
         // Turn on LED
         GPIO_writePin(DEVICE_GPIO_PIN_LED1, 0);

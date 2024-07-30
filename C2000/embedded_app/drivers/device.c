@@ -1,15 +1,18 @@
 #include "device.h"
 #include <stddef.h>
 
-#include "../third_party/driverlib/sysctl.h"
 #include "../third_party/driverlib/asysctl.h"
 #include "../third_party/driverlib/flash.h"
 #include "../third_party/driverlib/gpio.h"
 
-
+#ifndef CMDTOOL
 extern uint16_t RamfuncsLoadStart;
-extern uint16_t RamfuncsRunStart;
+extern uint16_t RamfuncsLoadEnd;
 extern uint16_t RamfuncsLoadSize;
+extern uint16_t RamfuncsRunStart;
+extern uint16_t RamfuncsRunEnd;
+extern uint16_t RamfuncsRunSize;
+#endif
 
 static void Device_enableAllPeripherals(void);
 
@@ -84,75 +87,6 @@ static void Device_enableAllPeripherals(void)
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TIMER2);
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_HRPWM);
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TBCLKSYNC);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM1);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM2);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM3);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM4);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM5);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM6);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM7);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM8);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP1);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP2);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP3);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP4);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP5);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP6);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP7);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EQEP1);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EQEP2);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SD1);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SCIA);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SCIB);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SPIA);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SPIB);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_I2CA);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CANA);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CANB);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ADCA);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ADCB);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ADCC);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS1);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS2);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS3);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS4);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS5);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS6);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS7);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA1);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA2);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA3);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA4);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA5);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA6);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA7);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DACA);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DACB);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_LINA);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PMBUSA);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_FSITXA);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_FSIRXA);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLB1);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLB2);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLB3);
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLB4);
-
-    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DCC0);
 }
 
 //*****************************************************************************
@@ -168,4 +102,18 @@ void device_init_GPIO(void)
     GPIO_unlockPortConfig(GPIO_PORT_A, 0xFFFFFFFF);
     GPIO_unlockPortConfig(GPIO_PORT_B, 0xFFFFFFFF);
     GPIO_unlockPortConfig(GPIO_PORT_H, 0xFFFFFFFF);
+}
+
+//*****************************************************************************
+//
+// Error handling function to be called when an ASSERT is violated
+//
+//*****************************************************************************
+void __error__(const char *filename, uint32_t line)
+{
+    //
+    // An ASSERT condition was evaluated as false. You can use the filename and
+    // line parameters to determine what went wrong.
+    //
+    ESTOP0;
 }
