@@ -14,10 +14,14 @@ LDSCRIPT = ./28004x_generic_flash_lnk.cmd
 IN_OBJS :=
 IN_OBJS += ./main.obj
 IN_OBJS += ./drivers/device.obj
+IN_OBJS += ./third_party/driverlib/sysctl.obj
+IN_OBJS += ./third_party/driverlib/flash.obj
 
 OBJS :=
 OBJS += ./Debug/main.obj
 OBJS += ./Debug/device.obj
+OBJS += ./Debug/sysctl.obj
+OBJS += ./Debug/flash.obj
 
 C_DEPS :=
 C_DEPS += ./Debug/main.d
