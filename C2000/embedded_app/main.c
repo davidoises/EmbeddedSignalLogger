@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include "device.h"
+// #include "device.h"
 
 int main()
 {
-    device_init();
+    // device_init();
 
     while(1)
     {

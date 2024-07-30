@@ -29,6 +29,9 @@ C_DEPS += ./Debug/main.d
 EXE_OUTPUTS :=
 EXE_OUTPUTS += ./Debug/app.out
 
+MAP_OUTPUTS :=
+MAP_OUTPUTS += ./Debug/app.map
+
 ###############################################################################
 # Includes
 
@@ -46,7 +49,7 @@ endif
 
 # All Target
 all: $(OBJS) $(CMD_SRCS)
-	@$(MAKE) --no-print-directory -Onone "./Debug/app.out"
+	@$(MAKE) --no-print-directory -Onone $(EXE_OUTPUTS)
 
 %.obj: ../%.c
 	@echo 'Building file: "$<"'
@@ -56,10 +59,10 @@ all: $(OBJS) $(CMD_SRCS)
 	@echo ' '
 
 # Tool invocations
-./Debug/app.out: $(OBJS) $(CMD_SRCS)
+%.out: $(OBJS) $(CMD_SRCS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi -z -m"./Debug/app.map" --stack_size=0x200 --warn_sections -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib" -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --xml_link_info="./Debug/app_linkInfo.xml" --rom_model -o "./Debug/app.out" $(OBJS) $(LDSCRIPT) $(LDLIBS)
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi -z -m$(MAP_OUTPUTS) --stack_size=0x200 --warn_sections -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib" -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --rom_model -o $(EXE_OUTPUTS) $(OBJS) $(LDSCRIPT) $(LDLIBS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
@@ -67,6 +70,7 @@ clean:
 	-@rm $(EXE_OUTPUTS)
 	-@rm $(OBJS)
 	-@rm $(C_DEPS)
+	-@rm $(MAP_OUTPUTS)
 	-@echo 'Finished clean'
 	-@echo ' '
 
