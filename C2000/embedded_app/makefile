@@ -18,6 +18,7 @@ IN_OBJS += ./third_party/driverlib/sysctl.obj
 IN_OBJS += ./third_party/driverlib/flash.obj
 IN_OBJS += ./third_party/driverlib/gpio.obj
 IN_OBJS += ./third_party/driverlib/interrupt.obj
+IN_OBJS += ./drivers/f28004x_codestartbranch.obj
 
 OBJS :=
 OBJS += ./Debug/main.obj
@@ -26,6 +27,7 @@ OBJS += ./Debug/sysctl.obj
 OBJS += ./Debug/flash.obj
 OBJS += ./Debug/gpio.obj
 OBJS += ./Debug/interrupt.obj
+OBJS += ./Debug/f28004x_codestartbranch.obj
 
 C_DEPS :=
 C_DEPS += ./Debug/main.d
@@ -74,10 +76,18 @@ endif
 all: $(IN_OBJS) $(LDSCRIPT)
 	@$(MAKE) --no-print-directory -Onone $(EXE_OUTPUTS)
 
+
+%.obj: %.asm
+	@echo 'Building file: "$<"'
+	@echo 'Invoking: C2000 Compiler'
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="./Debug/$(basename $(<F)).d" --output_file="./Debug/$(basename $(<F)).obj" "$<"
+	@echo 'Finished building: "$<"'
+	@echo ' '
+
 %.obj: %.c
 	@echo 'Building file: "$<"'
 	@echo 'Invoking: C2000 Compiler'
-	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 $(COMPILE_INCLUDES) -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi --preproc_with_compile --preproc_dependency="./Debug/$(basename $(<F)).d" --output_file="./Debug/$(basename $(<F)).obj" "$<"
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="./Debug/$(basename $(<F)).d" --output_file="./Debug/$(basename $(<F)).obj" "$<"
 	@echo 'Finished building: "$<"'
 	@echo ' '
 
@@ -85,7 +95,7 @@ all: $(IN_OBJS) $(LDSCRIPT)
 %.out: $(OBJS) $(LDSCRIPT)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi -z -m$(MAP_OUTPUTS) $(LDHEAP) $(LDSTACK) --warn_sections $(LD_INCLUDES) --reread_libs --diag_wrap=off --display_error_number --rom_model -o $(EXE_OUTPUTS) $(OBJS) $(LDSCRIPT) $(LDLIBS)
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m$(MAP_OUTPUTS) $(LDHEAP) $(LDSTACK) --warn_sections $(LD_INCLUDES) --reread_libs --define=_FLASH --diag_wrap=off --display_error_number --entry_point=code_start --rom_model -o $(EXE_OUTPUTS) $(OBJS) $(LDSCRIPT) $(LDLIBS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
