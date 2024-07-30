@@ -11,3 +11,8 @@ Step 3 install stlink toosl and add to path (version 1.7 works for me):
 https://github.com/stlink-org/stlink?tab=readme-ov-file
 
 Note: libopencm3 calls python3, but the makefile in the normal project calls python
+
+Once eveyrthing is installed, calling make will build the project and generate main.bin
+
+Then the binary can be flashed with the following command:
+st-flash write main.bin 0x08000000
