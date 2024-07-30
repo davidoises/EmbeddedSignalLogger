@@ -1,52 +1,17 @@
 #include "device.h"
-// #include "driverlib.h"
 #include <stddef.h>
 
 #include "../third_party/driverlib/sysctl.h"
+#include "../third_party/driverlib/asysctl.h"
 #include "../third_party/driverlib/flash.h"
+#include "../third_party/driverlib/gpio.h"
 
-
-//
-// 20MHz XTAL on controlCARD and Launchpad. For use with SysCtl_getClock().
-//
-#define DEVICE_OSCSRC_FREQ          20000000U
-
-//
-// Define to pass to SysCtl_setClock(). Will configure the clock as follows:
-// PLLSYSCLK = 20MHz (XTAL_OSC) * 10 (IMULT) * 1 (FMULT) / 2 (PLLCLK_BY_2)
-//
-#define DEVICE_SETCLOCK_CFG         (SYSCTL_OSCSRC_XTAL | SYSCTL_IMULT(10) |  \
-                                     SYSCTL_FMULT_NONE | SYSCTL_SYSDIV(2) |   \
-                                     SYSCTL_PLL_ENABLE)
-
-//
-// 100MHz SYSCLK frequency based on the above DEVICE_SETCLOCK_CFG. Update the
-// code below if a different clock configuration is used!
-//
-#define DEVICE_SYSCLK_FREQ          ((DEVICE_OSCSRC_FREQ * 10 * 1) / 2)
-
-//
-// 25MHz LSPCLK frequency based on the above DEVICE_SYSCLK_FREQ and a default
-// low speed peripheral clock divider of 4. Update the code below if a
-// different LSPCLK divider is used!
-//
-#define DEVICE_LSPCLK_FREQ          (DEVICE_SYSCLK_FREQ / 4)
-
-//*****************************************************************************
-//
-// Macro to call SysCtl_delay() to achieve a delay in microseconds. The macro
-// will convert the desired delay in microseconds to the count value expected
-// by the function. \b x is the number of microseconds to delay.
-//
-//*****************************************************************************
-#define DEVICE_DELAY_US(x) SysCtl_delay(((((long double)(x)) / (1000000.0L /  \
-                              (long double)DEVICE_SYSCLK_FREQ)) - 9.0L) / 5.0L)
-
-#define DEVICE_FLASH_WAITSTATES 4
 
 extern uint16_t RamfuncsLoadStart;
 extern uint16_t RamfuncsRunStart;
 extern uint16_t RamfuncsLoadSize;
+
+static void Device_enableAllPeripherals(void);
 
 void device_init(void)
 {
@@ -87,4 +52,120 @@ void device_init(void)
     //
     ASSERT(SysCtl_getClock(DEVICE_OSCSRC_FREQ) == DEVICE_SYSCLK_FREQ);
     ASSERT(SysCtl_getLowSpeedClock(DEVICE_OSCSRC_FREQ) == DEVICE_LSPCLK_FREQ);
+
+    Device_enableAllPeripherals();
+
+    //
+    //Disable DC DC in Analog block
+    //
+    ASysCtl_disableDCDC();
+
+    //
+    //Configure GPIO in Push Pull,Output Mode
+    //
+    GPIO_setPadConfig(22U, GPIO_PIN_TYPE_STD);
+    GPIO_setPadConfig(23U, GPIO_PIN_TYPE_STD);
+    GPIO_setDirectionMode(22U, GPIO_DIR_MODE_OUT);
+    GPIO_setDirectionMode(23U, GPIO_DIR_MODE_OUT);
+
+    //
+    // Configure GPIO22 and GPIO23 as digital pins
+    //
+    GPIO_setAnalogMode(22U, GPIO_ANALOG_DISABLED);
+    GPIO_setAnalogMode(23U, GPIO_ANALOG_DISABLED);
+}
+
+static void Device_enableAllPeripherals(void)
+{
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLA1);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DMA);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TIMER0);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TIMER1);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TIMER2);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_HRPWM);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TBCLKSYNC);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM1);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM2);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM3);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM4);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM5);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM6);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM7);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EPWM8);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP1);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP2);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP3);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP4);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP5);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP6);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ECAP7);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EQEP1);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_EQEP2);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SD1);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SCIA);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SCIB);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SPIA);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_SPIB);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_I2CA);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CANA);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CANB);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ADCA);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ADCB);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_ADCC);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS1);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS2);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS3);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS4);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS5);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS6);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CMPSS7);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA1);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA2);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA3);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA4);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA5);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA6);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PGA7);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DACA);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DACB);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_LINA);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_PMBUSA);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_FSITXA);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_FSIRXA);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLB1);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLB2);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLB3);
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_CLB4);
+
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_DCC0);
+}
+
+//*****************************************************************************
+//
+// Function to disable pin locks and enable pullups on GPIOs.
+//
+//*****************************************************************************
+void device_init_GPIO(void)
+{
+    //
+    // Disable pin locks.
+    //
+    GPIO_unlockPortConfig(GPIO_PORT_A, 0xFFFFFFFF);
+    GPIO_unlockPortConfig(GPIO_PORT_B, 0xFFFFFFFF);
+    GPIO_unlockPortConfig(GPIO_PORT_H, 0xFFFFFFFF);
 }

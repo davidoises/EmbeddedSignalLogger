@@ -16,12 +16,16 @@ IN_OBJS += ./main.obj
 IN_OBJS += ./drivers/device.obj
 IN_OBJS += ./third_party/driverlib/sysctl.obj
 IN_OBJS += ./third_party/driverlib/flash.obj
+IN_OBJS += ./third_party/driverlib/gpio.obj
+IN_OBJS += ./third_party/driverlib/interrupt.obj
 
 OBJS :=
 OBJS += ./Debug/main.obj
 OBJS += ./Debug/device.obj
 OBJS += ./Debug/sysctl.obj
 OBJS += ./Debug/flash.obj
+OBJS += ./Debug/gpio.obj
+OBJS += ./Debug/interrupt.obj
 
 C_DEPS :=
 C_DEPS += ./Debug/main.d
