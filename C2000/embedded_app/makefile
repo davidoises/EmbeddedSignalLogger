@@ -47,20 +47,18 @@ PROJECT_ROOT := "C:/Users/ddominguezmoises/OneDrive - Tesla/Desktop/MastersAppli
 COMPILE_INCLUDES :=
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/drivers
-COMPILE_INCLUDES += --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include"
-# New addition
-COMPILE_INCLUDES += --include_path="C:/ti/c2000/C2000Ware_5_02_00_00"
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/third_party/driverlib
+COMPILE_INCLUDES += --include_path="C:/ti/c2000/C2000Ware_5_02_00_00"
+COMPILE_INCLUDES += --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include"
+
+
 
 LD_INCLUDES :=
 LD_INCLUDES += -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib"
 LD_INCLUDES += -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include"
-# New addition
 LD_INCLUDES += -i"C:/ti/c2000/C2000Ware_5_02_00_00"
 
 LDLIBS := -llibc.a
-# New addition
-# LDLIBS += -lc2000ware_libraries.cmd.genlibs
 
 
 LDSTACK := --stack_size=0x3F8
