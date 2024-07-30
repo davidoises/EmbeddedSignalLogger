@@ -1,13 +1,13 @@
 #include <stdio.h>
-// #include "device.h"
+#include "drivers/device.h"
 
 int main()
 {
-    // device_init();
+    int a = device_init(5, 2);
 
     while(1)
     {
-        printf("Hello World simpler 2\n");
+        printf("Hello World simpler %d\n", a);
     }
 
     return 0;

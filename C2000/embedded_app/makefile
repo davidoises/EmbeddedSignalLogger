@@ -14,17 +14,23 @@ LDSCRIPT = ./28004x_generic_flash_lnk.cmd
 CMD_SRCS :=
 CMD_SRCS += $(LDSCRIPT)
 
-C_SRCS :=
-C_SRCS += ./main.c
+# C_SRCS :=
+# C_SRCS += ./main.c
 
-C_SRCS__QUOTED :=
-C_SRCS__QUOTED += "./main.c"
+# C_SRCS__QUOTED :=
+# C_SRCS__QUOTED += "./main.c"
+
+IN_OBJS :=
+IN_OBJS += ./main.obj
+IN_OBJS += ./drivers/device.obj
 
 OBJS :=
 OBJS += ./Debug/main.obj
+OBJS += ./Debug/device.obj
 
 C_DEPS :=
 C_DEPS += ./Debug/main.d
+C_DEPS += ./Debug/device.d
 
 EXE_OUTPUTS :=
 EXE_OUTPUTS += ./Debug/app.out
@@ -37,6 +43,7 @@ MAP_OUTPUTS += ./Debug/app.map
 
 COMPILE_INCLUDES :=
 COMPILE_INCLUDES += --include_path="C:/Users/ddominguezmoises/OneDrive - Tesla/Desktop/MastersApplication/EmbeddedLearning_C2000_OpenSource/app"
+COMPILE_INCLUDES += --include_path="C:/Users/ddominguezmoises/OneDrive - Tesla/Desktop/MastersApplication/EmbeddedLearning_C2000_OpenSource/app/drivers"
 COMPILE_INCLUDES += --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include"
 
 LDLIBS := -llibc.a
@@ -48,10 +55,10 @@ endif
 endif
 
 # All Target
-all: $(OBJS) $(CMD_SRCS)
+all: $(IN_OBJS) $(CMD_SRCS)
 	@$(MAKE) --no-print-directory -Onone $(EXE_OUTPUTS)
 
-%.obj: ../%.c
+%.obj: %.c
 	@echo 'Building file: "$<"'
 	@echo 'Invoking: C2000 Compiler'
 	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 $(COMPILE_INCLUDES) -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi --preproc_with_compile --preproc_dependency="./Debug/$(basename $(<F)).d" --output_file="./Debug/$(basename $(<F)).obj" "$<"

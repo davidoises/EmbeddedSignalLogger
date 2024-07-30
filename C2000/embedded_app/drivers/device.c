@@ -1,9 +1,9 @@
 #include "device.h"
-#include "driverlib.h"
+// #include "driverlib.h"
 
-void device_init(void)
+int device_init(int a, int b)
 {
-
+    return a + b;
     // Disable the watchdog
-    SysCtl_disableWatchdog();
+    // SysCtl_disableWatchdog();
 }
