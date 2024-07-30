@@ -3,6 +3,6 @@
 
 // #include "driverlib.h"
 
-int device_init(int a, int b);
+void device_init(void);
 
 #endif // __DEVICE_H__
