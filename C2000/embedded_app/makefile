@@ -24,35 +24,27 @@ OUTPUT_DIR := ./output
 ###############################################################################
 # Source files
 
-APP_C_SOURCES :=
-APP_C_SOURCES += $(SRC_DIR)/main.c
-APP_C_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/device.c
+APP_SOURCES :=
+APP_SOURCES += $(SRC_DIR)/main.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/device.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/f28004x_codestartbranch.asm
 
-TI_C_SOURCES :=
-TI_C_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/sysctl.c
-TI_C_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/flash.c
-TI_C_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/gpio.c
-TI_C_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/interrupt.c
+TI_SOURCES :=
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/sysctl.c
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/flash.c
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/gpio.c
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/interrupt.c
 
-APP_ASM_SOURCES :=
-APP_ASM_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/f28004x_codestartbranch.asm
-
-ALL_C_SOURCES :=
-ALL_C_SOURCES += $(APP_C_SOURCES)
-ALL_C_SOURCES += $(TI_C_SOURCES)
-
-ALL_ASM_SOURCES :=
-ALL_ASM_SOURCES += $(APP_ASM_SOURCES)
+ALL_SOURCES :=
+ALL_SOURCES += $(APP_SOURCES)
+ALL_SOURCES += $(TI_SOURCES)
 
 ###############################################################################
 # Outputs
 
-C_OBJS := $(ALL_C_SOURCES:.c=.obj)
-ASM_OBJS := $(ALL_ASM_SOURCES:.asm=.obj)
-
-ALL_OBJS_TARGET :=
-ALL_OBJS_TARGET += $(C_OBJS)
-ALL_OBJS_TARGET += $(ASM_OBJS)
+ALL_OBJS_TARGET := $(ALL_SOURCES:.c=.obj)
+ALL_OBJS_TARGET := $(ALL_OBJS_TARGET:.asm=.obj)
+# $(info $(ALL_OBJS_TARGET))
 
 # The final objects are all placed in the output directory
 OBJS := $(addprefix $(OUTPUT_DIR)/, $(notdir $(ALL_OBJS_TARGET)))
