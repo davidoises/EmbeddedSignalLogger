@@ -10,7 +10,7 @@ CG_TOOL_ROOT := C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS
 
 CG_TOOL := $(CG_TOOL_ROOT)/bin/cl2000
 
-PROJECT_ROOT := "C:/Users/ddominguezmoises/OneDrive - Tesla/Desktop/MastersApplication/EmbeddedLearning_C2000_OpenSource/embedded_app"
+PROJECT_ROOT := C:/EmbeddedSignalLogger/C2000/embedded_app
 
 ###############################################################################
 # Directories

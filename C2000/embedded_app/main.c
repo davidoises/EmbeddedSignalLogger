@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "drivers/device.h"
-#include "third_party/driverlib/gpio.h"
-#include "third_party/driverlib/interrupt.h"
+#include "device.h"
+#include "gpio.h"
+#include "interrupt.h"
 
 
 void main(void)

@@ -1,10 +1,9 @@
 #include "device.h"
+
 #include <stddef.h>
 
-// #include "../third_party/driverlib/flash.h"
-// #include "../third_party/driverlib/gpio.h"
-#include <flash.h>
-#include <gpio.h>
+#include "flash.h"
+#include "gpio.h"
 
 #ifndef CMDTOOL
 extern uint16_t RamfuncsLoadStart;
