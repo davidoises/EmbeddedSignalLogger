@@ -3,55 +3,74 @@
 # RM := DEL /F
 # RMDIR := RMDIR /S/Q
 
+###############################################################################
+# Variables
+
 CG_TOOL_ROOT := C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS
+
 CG_TOOL := $(CG_TOOL_ROOT)/bin/cl2000
 
+PROJECT_ROOT := C:/EmbeddedSignalLogger/C2000/embedded_app
+
 ###############################################################################
-# Linkerscript
+# Directories
 
-LDSCRIPT = ./28004x_generic_flash_lnk.cmd
+SRC_DIR := .
+DRIVERS_DIR := drivers
+TI_DRIVERLIB_DIR := third_party/driverlib
 
-IN_OBJS :=
-IN_OBJS += ./main.obj
-IN_OBJS += ./drivers/device.obj
-IN_OBJS += ./third_party/driverlib/sysctl.obj
-IN_OBJS += ./third_party/driverlib/flash.obj
-IN_OBJS += ./third_party/driverlib/gpio.obj
-IN_OBJS += ./third_party/driverlib/interrupt.obj
-IN_OBJS += ./drivers/f28004x_codestartbranch.obj
+OUTPUT_DIR := ./output
 
-OBJS :=
-OBJS += ./Debug/main.obj
-OBJS += ./Debug/device.obj
-OBJS += ./Debug/sysctl.obj
-OBJS += ./Debug/flash.obj
-OBJS += ./Debug/gpio.obj
-OBJS += ./Debug/interrupt.obj
-OBJS += ./Debug/f28004x_codestartbranch.obj
+###############################################################################
+# Source files
 
-C_DEPS :=
-C_DEPS += ./Debug/main.d
-C_DEPS += ./Debug/device.d
+APP_SOURCES :=
+APP_SOURCES += $(SRC_DIR)/main.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/device.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/f28004x_codestartbranch.asm
+
+TI_SOURCES :=
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/sysctl.c
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/flash.c
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/gpio.c
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/interrupt.c
+
+ALL_SOURCES :=
+ALL_SOURCES += $(APP_SOURCES)
+ALL_SOURCES += $(TI_SOURCES)
+
+###############################################################################
+# Outputs
+
+ALL_OBJS_TARGET := $(ALL_SOURCES:.c=.obj)
+ALL_OBJS_TARGET := $(ALL_OBJS_TARGET:.asm=.obj)
+# $(info $(ALL_OBJS_TARGET))
+
+# The final objects are all placed in the output directory
+OBJS := $(addprefix $(OUTPUT_DIR)/, $(notdir $(ALL_OBJS_TARGET)))
+
+C_DEPS := $(OBJS:.obj=.d)
 
 EXE_OUTPUTS :=
-EXE_OUTPUTS += ./Debug/app.out
+EXE_OUTPUTS += $(OUTPUT_DIR)/app.out
 
 MAP_OUTPUTS :=
-MAP_OUTPUTS += ./Debug/app.map
+MAP_OUTPUTS += $(OUTPUT_DIR)/app.map
 
 ###############################################################################
-# Includes
-
-PROJECT_ROOT := "C:/Users/ddominguezmoises/OneDrive - Tesla/Desktop/MastersApplication/EmbeddedLearning_C2000_OpenSource/embedded_app"
+# Compiler
 
 COMPILE_INCLUDES :=
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)
-COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/drivers
-COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/third_party/driverlib
+COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/$(DRIVERS_DIR)
+COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/$(TI_DRIVERLIB_DIR)
 COMPILE_INCLUDES += --include_path="C:/ti/c2000/C2000Ware_5_02_00_00"
 COMPILE_INCLUDES += --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include"
 
+###############################################################################
+# Linker
 
+LDSCRIPT = $(SRC_DIR)/28004x_generic_flash_lnk.cmd
 
 LD_INCLUDES :=
 LD_INCLUDES += -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib"
@@ -60,32 +79,28 @@ LD_INCLUDES += -i"C:/ti/c2000/C2000Ware_5_02_00_00"
 
 LDLIBS := -llibc.a
 
-
 LDSTACK := --stack_size=0x3F8
 LDHEAP := --heap_size=0x200
 
-ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(strip $(C_DEPS)),)
--include $(C_DEPS)
-endif
-endif
+###############################################################################
+# TARGETS
 
 # All Target
-all: $(IN_OBJS) $(LDSCRIPT)
+all: $(ALL_OBJS_TARGET) $(LDSCRIPT)
 	@$(MAKE) --no-print-directory -Onone $(EXE_OUTPUTS)
 
 
 %.obj: %.asm
 	@echo 'Building file: "$<"'
 	@echo 'Invoking: C2000 Compiler'
-	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="./Debug/$(basename $(<F)).d" --output_file="./Debug/$(basename $(<F)).obj" "$<"
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="$(OUTPUT_DIR)/$(basename $(<F)).d" --output_file="$(OUTPUT_DIR)/$(basename $(<F)).obj" "$<"
 	@echo 'Finished building: "$<"'
 	@echo ' '
 
 %.obj: %.c
 	@echo 'Building file: "$<"'
 	@echo 'Invoking: C2000 Compiler'
-	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="./Debug/$(basename $(<F)).d" --output_file="./Debug/$(basename $(<F)).obj" "$<"
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="$(OUTPUT_DIR)/$(basename $(<F)).d" --output_file="$(OUTPUT_DIR)/$(basename $(<F)).obj" "$<"
 	@echo 'Finished building: "$<"'
 	@echo ' '
 
@@ -98,10 +113,10 @@ all: $(IN_OBJS) $(LDSCRIPT)
 	@echo ' '
 
 clean:
-	-@rm $(EXE_OUTPUTS)
-	-@rm $(OBJS)
-	-@rm $(C_DEPS)
-	-@rm $(MAP_OUTPUTS)
+	-@rm -f $(EXE_OUTPUTS)
+	-@rm -f $(OBJS)
+	-@rm -f $(C_DEPS)
+	-@rm -f $(MAP_OUTPUTS)
 	-@echo 'Finished clean'
 	-@echo ' '
 
@@ -109,3 +124,8 @@ clean:
 .SECONDARY:
 
 
+ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(strip $(C_DEPS)),)
+-include $(C_DEPS)
+endif
+endif
