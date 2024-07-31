@@ -1,7 +1,7 @@
 #ifndef __DEVICE_H__
 #define __DEVICE_H__
 
-#include "../third_party/driverlib/sysctl.h"
+#include "sysctl.h"
 
 //
 // 20MHz XTAL on controlCARD and Launchpad. For use with SysCtl_getClock().
