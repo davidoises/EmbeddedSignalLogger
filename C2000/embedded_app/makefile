@@ -68,9 +68,20 @@ COMPILE_INCLUDES += --include_path="C:/ti/c2000/C2000Ware_5_02_00_00"
 COMPILE_INCLUDES += --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include"
 
 ###############################################################################
+# Defines
+DEFS :=
+DEFS += --define=DEBUG
+
+###############################################################################
 # Linker
 
+# Lines to run from FLASH
 LDSCRIPT = $(SRC_DIR)/28004x_generic_flash_lnk.cmd
+DEFS += --define=_FLASH
+
+# Lines to run from RAM
+# LDSCRIPT = $(SRC_DIR)/28004x_generic_ram_lnk.cmd
+
 
 LD_INCLUDES :=
 LD_INCLUDES += -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib"
@@ -93,14 +104,14 @@ all: $(ALL_OBJS_TARGET) $(LDSCRIPT)
 %.obj: %.asm
 	@echo 'Building file: "$<"'
 	@echo 'Invoking: C2000 Compiler'
-	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="$(OUTPUT_DIR)/$(basename $(<F)).d" --output_file="$(OUTPUT_DIR)/$(basename $(<F)).obj" "$<"
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) $(DEFS) --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="$(OUTPUT_DIR)/$(basename $(<F)).d" --output_file="$(OUTPUT_DIR)/$(basename $(<F)).obj" "$<"
 	@echo 'Finished building: "$<"'
 	@echo ' '
 
 %.obj: %.c
 	@echo 'Building file: "$<"'
 	@echo 'Invoking: C2000 Compiler'
-	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="$(OUTPUT_DIR)/$(basename $(<F)).d" --output_file="$(OUTPUT_DIR)/$(basename $(<F)).obj" "$<"
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(COMPILE_INCLUDES) $(DEFS) --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --preproc_with_compile --preproc_dependency="$(OUTPUT_DIR)/$(basename $(<F)).d" --output_file="$(OUTPUT_DIR)/$(basename $(<F)).obj" "$<"
 	@echo 'Finished building: "$<"'
 	@echo ' '
 
@@ -108,7 +119,7 @@ all: $(ALL_OBJS_TARGET) $(LDSCRIPT)
 %.out: $(OBJS) $(LDSCRIPT)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff --define=DEBUG --define=_LAUNCHXL_F280049C --define=_FLASH --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m$(MAP_OUTPUTS) $(LDHEAP) $(LDSTACK) --warn_sections $(LD_INCLUDES) --reread_libs --define=_FLASH --diag_wrap=off --display_error_number --entry_point=code_start --rom_model -o $(EXE_OUTPUTS) $(OBJS) $(LDSCRIPT) $(LDLIBS)
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(DEFS) --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m$(MAP_OUTPUTS) $(LDHEAP) $(LDSTACK) --warn_sections $(LD_INCLUDES) --reread_libs --define=_FLASH --diag_wrap=off --display_error_number --entry_point=code_start --rom_model -o $(EXE_OUTPUTS) $(OBJS) $(LDSCRIPT) $(LDLIBS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 

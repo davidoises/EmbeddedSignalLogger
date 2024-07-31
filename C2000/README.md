@@ -6,4 +6,6 @@ Example call to gmake to build the project (go inside app folder):
 
 C:\ti\ccs1271\ccs\utils\bin\gmake -k -j 12
 
-The code can be flashed using uniflash, using app.out .
+The code can be flashed using uniflash, using the generated app.out executable.
+
+Once a bootloader is added this process will use custom software.

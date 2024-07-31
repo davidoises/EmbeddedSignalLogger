@@ -1,17 +1,18 @@
 #include "device.h"
 
-#include <stddef.h>
-
 #include "flash.h"
 #include "gpio.h"
 
-#ifndef CMDTOOL
+#ifdef _FLASH
+#include <stddef.h>
+
 extern uint16_t RamfuncsLoadStart;
 extern uint16_t RamfuncsLoadEnd;
 extern uint16_t RamfuncsLoadSize;
 extern uint16_t RamfuncsRunStart;
 extern uint16_t RamfuncsRunEnd;
 extern uint16_t RamfuncsRunSize;
+
 #endif
 
 void device_init(void)
@@ -19,6 +20,7 @@ void device_init(void)
     // Disable the watchdog
     SysCtl_disableWatchdog();
 
+#ifdef _FLASH
     //
     // Copy time critical code and flash setup code to RAM. This includes the
     // following functions: InitFlash();
@@ -33,6 +35,7 @@ void device_init(void)
     // reside in RAM.
     //
     Flash_initModule(FLASH0CTRL_BASE, FLASH0ECC_BASE, DEVICE_FLASH_WAITSTATES);
+#endif // _FLASH
 
     //
     // Set up PLL control and clock dividers
@@ -54,6 +57,17 @@ void device_init(void)
     ASSERT(SysCtl_getClock(DEVICE_OSCSRC_FREQ) == DEVICE_SYSCLK_FREQ);
     ASSERT(SysCtl_getLowSpeedClock(DEVICE_OSCSRC_FREQ) == DEVICE_LSPCLK_FREQ);
 
+#ifndef _FLASH
+    //
+    // Call Device_cal function when run using debugger
+    // This function is called as part of the Boot code. The function is called
+    // in the Device_init function since during debug time resets, the boot code
+    // will not be executed and the gel script will reinitialize all the
+    // registers and the calibrated values will be lost.
+    // Sysctl_deviceCal is a wrapper function for Device_Cal
+    //
+    SysCtl_deviceCal();
+#endif // _FLASH
 }
 
 //*****************************************************************************
