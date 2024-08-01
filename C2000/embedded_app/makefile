@@ -27,6 +27,9 @@ OUTPUT_DIR := ./output
 APP_SOURCES :=
 APP_SOURCES += $(SRC_DIR)/main.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/device.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/gpio_driver.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/pinmux_driver.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/timer_driver.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/f28004x_codestartbranch.asm
 
 TI_SOURCES :=
@@ -34,6 +37,7 @@ TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/sysctl.c
 TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/flash.c
 TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/gpio.c
 TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/interrupt.c
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/cputimer.c
 
 ALL_SOURCES :=
 ALL_SOURCES += $(APP_SOURCES)
@@ -63,6 +67,7 @@ MAP_OUTPUTS += $(OUTPUT_DIR)/app.map
 COMPILE_INCLUDES :=
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/$(DRIVERS_DIR)
+COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/common
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/$(TI_DRIVERLIB_DIR)
 COMPILE_INCLUDES += --include_path="C:/ti/c2000/C2000Ware_5_02_00_00"
 COMPILE_INCLUDES += --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include"
@@ -76,11 +81,11 @@ DEFS += --define=DEBUG
 # Linker
 
 # Lines to run from FLASH
-LDSCRIPT = $(SRC_DIR)/28004x_generic_flash_lnk.cmd
-DEFS += --define=_FLASH
+# LDSCRIPT = $(SRC_DIR)/28004x_generic_flash_lnk.cmd
+# DEFS += --define=_FLASH
 
 # Lines to run from RAM
-# LDSCRIPT = $(SRC_DIR)/28004x_generic_ram_lnk.cmd
+LDSCRIPT = $(SRC_DIR)/28004x_generic_ram_lnk.cmd
 
 
 LD_INCLUDES :=
@@ -119,7 +124,7 @@ all: $(ALL_OBJS_TARGET) $(LDSCRIPT)
 %.out: $(OBJS) $(LDSCRIPT)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(DEFS) --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m$(MAP_OUTPUTS) $(LDHEAP) $(LDSTACK) --warn_sections $(LD_INCLUDES) --reread_libs --define=_FLASH --diag_wrap=off --display_error_number --entry_point=code_start --rom_model -o $(EXE_OUTPUTS) $(OBJS) $(LDSCRIPT) $(LDLIBS)
+	@$(CG_TOOL) -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff $(DEFS) --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi -z -m$(MAP_OUTPUTS) $(LDHEAP) $(LDSTACK) --warn_sections $(LD_INCLUDES) --reread_libs --diag_wrap=off --display_error_number --entry_point=code_start --rom_model -o $(EXE_OUTPUTS) $(OBJS) $(LDSCRIPT) $(LDLIBS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
