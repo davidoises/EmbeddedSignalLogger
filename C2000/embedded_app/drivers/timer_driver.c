@@ -27,10 +27,9 @@ void timer_driver_init(void)
 //*****************************************************************************
 void timer_driver_interrupt_init()
 {
-    EALLOW;
 	// Interrupt Settings for INT_myCPUTIMER0
 	Interrupt_register(INT_TIMER0, &timer0_isr);
-    EDIS;
+
 	Interrupt_enable(INT_TIMER0);
 }
 

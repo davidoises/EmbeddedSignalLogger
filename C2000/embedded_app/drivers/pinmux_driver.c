@@ -9,7 +9,6 @@
 //*****************************************************************************
 void pinmux_driver_init()
 {
-    EALLOW;
 
     // GPIO23 -> GPIO Pinmux
 	GPIO_setPinConfig(GPIO_23_GPIO23);
@@ -17,5 +16,4 @@ void pinmux_driver_init()
     // GPIO34 -> GPIO Pinmux
 	GPIO_setPinConfig(GPIO_34_GPIO34);
 
-    EDIS;
 }
