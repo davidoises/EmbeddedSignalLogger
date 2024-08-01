@@ -6,8 +6,8 @@
 #include "interrupt.h"
 #include "device.h"
 
-#define TIMER_PERIOD_SEC 0.5
-#define CPU_TIMER_COUNT_PERIOD ((uint32_t)(DEVICE_SYSCLK_FREQ*TIMER_PERIOD_SEC))
+#define TIMER_PERIOD_MILLISEC 1
+#define CPU_TIMER_COUNT_PERIOD (TIMER_PERIOD_MILLISEC*DEVICE_SYSCLK_FREQ/1000)
 
 void timer_driver_init(void)
 {

@@ -81,11 +81,11 @@ DEFS += --define=DEBUG
 # Linker
 
 # Lines to run from FLASH
-LDSCRIPT = $(SRC_DIR)/28004x_generic_flash_lnk.cmd
-DEFS += --define=_FLASH
+# LDSCRIPT = $(SRC_DIR)/28004x_generic_flash_lnk.cmd
+# DEFS += --define=_FLASH
 
 # Lines to run from RAM
-# LDSCRIPT = $(SRC_DIR)/28004x_generic_ram_lnk.cmd
+LDSCRIPT = $(SRC_DIR)/28004x_generic_ram_lnk.cmd
 
 
 LD_INCLUDES :=

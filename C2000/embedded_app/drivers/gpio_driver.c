@@ -50,7 +50,7 @@ bool gpio_driver_read(uint16_t channel)
 
 void gpio_driver_set(uint16_t channel, bool val)
 {
-    GPIO_writePin(channel, (uint16_t)val);
+    GPIO_writePin(channel, (uint16_t)(!val));
 }
 
 void gpio_driver_toggle(uint16_t channel)

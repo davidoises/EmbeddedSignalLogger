@@ -6,13 +6,19 @@
 #include "interrupt.h"
 #include "timer_driver.h"
 
+#define TASK_PRESCALE_100HZ 10
+#define TASK_PRESCALE_10HZ  100
+
 __interrupt void timer0_isr(void);
+
+void task_10hz(void);
+void task_100hz(void);
+void task_1khz(void);
 
 //
 // Globals
 //
-uint16_t cpuTimer0IntCount = 0; //number of times TIMER 0 ISR is triggered
-uint16_t delayCount = 1;        //number (0-9) to scale the LED frequency
+uint32_t cpu_timer0_tick_count = 0; //number of times TIMER 0 ISR is triggered
 
 void main(void)
 {
@@ -43,37 +49,47 @@ void main(void)
 
     timer_driver_start();
 
-    // gpio_driver_set(DEVICE_GPIO_PIN_LED1, false);
+    gpio_driver_set(DEVICE_GPIO_PIN_LED1, false);
 
     while(1)
-    {
-        printf("Hello World with blink %d\n", 10);
-
-        // // Turn on LED
-        gpio_driver_set(DEVICE_GPIO_PIN_LED1, false);
-        // gpio_driver_toggle(DEVICE_GPIO_PIN_LED2);
-
-        // Delay for a bit.
-        DEVICE_DELAY_US(500000);
-
-        // Turn off LED
-        gpio_driver_set(DEVICE_GPIO_PIN_LED1, true);
-
-        // // Delay for a bit.
-        // DEVICE_DELAY_US(500000);
-    }
+    {}
 }
 
 __interrupt void timer0_isr(void)
 {
-    cpuTimer0IntCount++;
-    if (cpuTimer0IntCount >= delayCount){
-        cpuTimer0IntCount = 0;
-        gpio_driver_toggle(DEVICE_GPIO_PIN_LED2);
+    cpu_timer0_tick_count++;
+
+    task_1khz();
+
+    if ((cpu_timer0_tick_count % TASK_PRESCALE_100HZ) == 0)
+    {
+        task_100hz();
+    }
+
+    if ((cpu_timer0_tick_count % TASK_PRESCALE_10HZ) == 0)
+    {
+        task_10hz();
     }
 
     //
     // Acknowledge this interrupt to receive more interrupts from group 1
     //
     timer_driver_clear_ack();
+}
+
+void task_10hz(void)
+{
+    printf("Hello World with blink %d\n", 10);
+
+    // gpio_driver_toggle(DEVICE_GPIO_PIN_LED1);
+}
+
+void task_100hz(void)
+{
+    gpio_driver_toggle(DEVICE_GPIO_PIN_LED2);
+}
+
+void task_1khz(void)
+{
+    NOP;
 }
