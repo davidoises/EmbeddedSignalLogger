@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "device.h"
+#include "pinmux_driver.h"
 #include "gpio_driver.h"
 #include "interrupt.h"
 
@@ -9,7 +10,9 @@ void main(void)
 {
     device_init();
 
-    device_init_GPIO();
+    pinmux_driver_init();
+
+    gpio_driver_init();
 
     // Initialize PIE and clear PIE registers. Disables CPU interrupts.
     Interrupt_initModule();

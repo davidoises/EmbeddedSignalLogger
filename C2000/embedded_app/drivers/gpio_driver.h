@@ -3,7 +3,7 @@
 
 #include "common_types.h"
 
-void device_init_GPIO(void);
+void gpio_driver_init(void);
 
 bool gpio_driver_read(uint16_t channel);
 

@@ -9,7 +9,7 @@
 // Function to disable pin locks and enable pullups on GPIOs.
 //
 //*****************************************************************************
-void device_init_GPIO(void)
+void gpio_driver_init(void)
 {
     //
     // Disable DC DC in Analog block

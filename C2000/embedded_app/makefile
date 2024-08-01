@@ -28,6 +28,7 @@ APP_SOURCES :=
 APP_SOURCES += $(SRC_DIR)/main.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/device.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/gpio_driver.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/pinmux_driver.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/f28004x_codestartbranch.asm
 
 TI_SOURCES :=
