@@ -1,10 +1,8 @@
 #include "device.h"
 
 #include "flash.h"
-#include "gpio.h"
 
 #ifdef _FLASH
-#include <stddef.h>
 
 extern uint16_t RamfuncsLoadStart;
 extern uint16_t RamfuncsLoadEnd;
@@ -68,32 +66,6 @@ void device_init(void)
     //
     SysCtl_deviceCal();
 #endif // _FLASH
-}
-
-//*****************************************************************************
-//
-// Function to disable pin locks and enable pullups on GPIOs.
-//
-//*****************************************************************************
-void device_init_GPIO(void)
-{
-    //
-    // Disable pin locks.
-    //
-    GPIO_unlockPortConfig(GPIO_PORT_A, 0xFFFFFFFF);
-    GPIO_unlockPortConfig(GPIO_PORT_B, 0xFFFFFFFF);
-    GPIO_unlockPortConfig(GPIO_PORT_H, 0xFFFFFFFF);
-
-    //
-    //Configure GPIO in Push Pull,Output Mode
-    //
-    GPIO_setPadConfig(DEVICE_GPIO_PIN_LED1, GPIO_PIN_TYPE_STD);
-    GPIO_setDirectionMode(DEVICE_GPIO_PIN_LED1, GPIO_DIR_MODE_OUT);
-
-    //
-    // Configure GPIO23 as digital pins
-    //
-    GPIO_setAnalogMode(DEVICE_GPIO_PIN_LED1, GPIO_ANALOG_DISABLED);
 }
 
 //*****************************************************************************

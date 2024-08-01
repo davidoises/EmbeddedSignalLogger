@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "device.h"
-#include "gpio.h"
+#include "gpio_driver.h"
 #include "interrupt.h"
 
 
@@ -16,6 +16,10 @@ void main(void)
     // Initialize the PIE vector table
     Interrupt_initVectorTable();
     // Enable Global Interrupt (INTM) and realtime interrupt (DBGM)
+
+    // Board init would go here
+
+
     EINT;
     ERTM;
 
@@ -24,12 +28,16 @@ void main(void)
         printf("Hello World with blink %d\n", 10);
 
         // Turn on LED
-        GPIO_writePin(DEVICE_GPIO_PIN_LED1, 0);
+        gpio_driver_set(DEVICE_GPIO_PIN_LED1, false);
+        gpio_driver_toggle(DEVICE_GPIO_PIN_LED2);
+
         // Delay for a bit.
-        DEVICE_DELAY_US(1000000);
+        DEVICE_DELAY_US(500000);
+
         // Turn off LED
-        GPIO_writePin(DEVICE_GPIO_PIN_LED1, 1);
+        gpio_driver_set(DEVICE_GPIO_PIN_LED1, true);
+
         // Delay for a bit.
-        DEVICE_DELAY_US(1000000);
+        DEVICE_DELAY_US(500000);
     }
 }

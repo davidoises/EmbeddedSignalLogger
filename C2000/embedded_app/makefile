@@ -27,6 +27,7 @@ OUTPUT_DIR := ./output
 APP_SOURCES :=
 APP_SOURCES += $(SRC_DIR)/main.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/device.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/gpio_driver.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/f28004x_codestartbranch.asm
 
 TI_SOURCES :=
@@ -63,6 +64,7 @@ MAP_OUTPUTS += $(OUTPUT_DIR)/app.map
 COMPILE_INCLUDES :=
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/$(DRIVERS_DIR)
+COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/common
 COMPILE_INCLUDES += --include_path=$(PROJECT_ROOT)/$(TI_DRIVERLIB_DIR)
 COMPILE_INCLUDES += --include_path="C:/ti/c2000/C2000Ware_5_02_00_00"
 COMPILE_INCLUDES += --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include"

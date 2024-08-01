@@ -2,6 +2,7 @@
 #define __DEVICE_H__
 
 #include "sysctl.h"
+#include "common_types.h"
 
 //
 // 20MHz XTAL on controlCARD and Launchpad. For use with SysCtl_getClock().
@@ -50,6 +51,5 @@
 #define DEVICE_GPIO_CFG_LED2        GPIO_34_GPIO34  // "pinConfig" for LD5
 
 void device_init(void);
-void device_init_GPIO(void);
 
 #endif // __DEVICE_H__
