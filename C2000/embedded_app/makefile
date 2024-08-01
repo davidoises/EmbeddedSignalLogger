@@ -29,6 +29,7 @@ APP_SOURCES += $(SRC_DIR)/main.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/device.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/gpio_driver.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/pinmux_driver.c
+APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/timer_driver.c
 APP_SOURCES += $(SRC_DIR)/$(DRIVERS_DIR)/f28004x_codestartbranch.asm
 
 TI_SOURCES :=
@@ -36,6 +37,7 @@ TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/sysctl.c
 TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/flash.c
 TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/gpio.c
 TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/interrupt.c
+TI_SOURCES += $(SRC_DIR)/$(TI_DRIVERLIB_DIR)/cputimer.c
 
 ALL_SOURCES :=
 ALL_SOURCES += $(APP_SOURCES)

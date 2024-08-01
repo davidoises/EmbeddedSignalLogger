@@ -11,6 +11,8 @@
 //*****************************************************************************
 void gpio_driver_init(void)
 {
+    EALLOW;
+
     //
     // Disable DC DC in Analog block
     // This is here beacuse GPIO PIN LED1 is on GPIO23, and TRM mentions DC-DC should
@@ -39,6 +41,7 @@ void gpio_driver_init(void)
     //
     GPIO_setAnalogMode(DEVICE_GPIO_PIN_LED1, GPIO_ANALOG_DISABLED);
     GPIO_setAnalogMode(DEVICE_GPIO_PIN_LED2, GPIO_ANALOG_DISABLED);
+    EDIS;
 }
 
 bool gpio_driver_read(uint16_t channel)
