@@ -20,8 +20,12 @@ void main(void)
     Interrupt_initVectorTable();
     // Enable Global Interrupt (INTM) and realtime interrupt (DBGM)
 
-    // Board init would go here
-
+    // {
+    // THIS IS THE BOARD INIT BLOCK
+    // 1. Add timer configuration calls here: configure hw timer and connect to PIE
+    // 2. Then sciinit would be here for now dont
+    // 3. Last should be to initialize the interrupts: register func and enable the actual interrupt
+    // }
 
     EINT;
     ERTM;
